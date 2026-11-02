@@ -93,6 +93,7 @@
               "account/usage",
               "account/limits",
               "account/extra-usage",
+              "account/model-prices",
               "account/billing",
               "account/api-keys"
             ]

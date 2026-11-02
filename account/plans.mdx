@@ -18,13 +18,13 @@ curl -s "$SPLOX_BASE_URL/v1/subscriptions/plans"
 {
   "plans": [
     {"slug": "free",    "name": "Free",    "monthly_price_microdollars": 0,
-     "yearly_price_microdollars": 0,          "machine_limit": 1, "machines_persistent": false},
+     "machine_limit": 1, "machines_persistent": false},
     {"slug": "pro",     "name": "Pro",     "monthly_price_microdollars": 25000000,
-     "yearly_price_microdollars": 240000000,  "machine_limit": 1, "machines_persistent": true},
+     "machine_limit": 1, "machines_persistent": true},
     {"slug": "max",     "name": "Max",     "monthly_price_microdollars": 99000000,
-     "yearly_price_microdollars": 948000000,  "machine_limit": 3, "machines_persistent": true},
+     "machine_limit": 3, "machines_persistent": true},
     {"slug": "max_20x", "name": "Max 20x", "monthly_price_microdollars": 300000000,
-     "yearly_price_microdollars": 2880000000, "machine_limit": 5, "machines_persistent": true}
+     "machine_limit": 5, "machines_persistent": true}
   ]
 }
 ```
@@ -37,14 +37,14 @@ Money is in **microdollars** everywhere in this API: 1,000,000 µ$ is one dollar
 
 ## The four
 
-| Plan | Monthly | Yearly | Machines | Kept running |
-| --- | --- | --- | --- | --- |
-| Free | $0 | $0 | 1 | No |
-| Pro | $25 | $240 ($20/mo) | 1 | Yes |
-| Max | $99 | $948 ($79/mo) | 3 | Yes |
-| Max 20x | $300 | $2,880 ($240/mo) | 5 | Yes |
+| Plan | Monthly | Machines | Kept running |
+| --- | --- | --- | --- |
+| Free | $0 | 1 | No |
+| Pro | $25 | 1 | Yes |
+| Max | $99 | 3 | Yes |
+| Max 20x | $300 | 5 | Yes |
 
-`Max` and `Max 20x` are one card in the app with a `5×` / `20×` toggle on it.
+Plans are monthly; there are no yearly plans. `Max` and `Max 20x` are one card in the app with a `5×` / `20×` toggle on it.
 
 <Frame caption="The plan grid: price, what the tier adds, and the machines it runs">
   <img src="/images/account/plans.png" alt="The Splox pricing page showing Free, Pro and Max" />

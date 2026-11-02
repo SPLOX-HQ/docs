@@ -54,14 +54,13 @@ the app re-reads the plan and the balance so the new tier shows immediately.
   `pro`, `max` or `max_20x`. `free` is not purchasable and is refused.
 </ParamField>
 <ParamField body="interval" type="string" required>
-  `monthly` or `yearly`. Nothing else.
+  `monthly`. Plans are monthly; there are no yearly plans.
 </ParamField>
 
-Both refusals are plain 400s:
+A refusal is a plain 400:
 
 ```json
 {"message": "Plan_slug \"free\" is not purchasable via Stripe checkout"}
-{"message": "Interval must be 'monthly' or 'yearly'"}
 ```
 
 This endpoint is rate limited to 10 calls a minute per user, because each one

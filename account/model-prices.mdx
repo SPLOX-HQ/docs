@@ -1,0 +1,72 @@
+---
+title: "Model prices"
+description: "What each model costs per million tokens when the wallet pays: input, output and cached input"
+---
+
+These are the list prices. They are what [extra usage](/account/extra-usage)
+charges the wallet once a plan window is full, and what a call costs when the
+wallet pays for it. Inside your plan's windows you are not charged per token;
+the windows are what the plan buys (see [Usage](/account/usage)).
+
+Prices are in US dollars per **one million tokens**.
+
+| Model | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| `theo-quazar-1.3` | $9.00 | $18.00 | $0.20 |
+| `theo-spark-1.3` | $4.00 | $12.00 | $0.12 |
+| `kimi-k3` | $3.50 | $10.00 | $0.30 |
+
+## What each column counts
+
+<ResponseField name="Input" type="per 1M tokens">
+  Tokens sent to the model that were not served from its cache: your message,
+  the parts of the conversation the model has not seen before, tool results.
+</ResponseField>
+<ResponseField name="Output" type="per 1M tokens">
+  Tokens the model writes: its answer, its tool calls, and its reasoning when
+  the model reasons.
+</ResponseField>
+<ResponseField name="Cached input" type="per 1M tokens">
+  Input the model has already seen in this conversation and reads back from its
+  cache. An agent's turns resend the whole conversation, so after the first
+  turn nearly all of the input is cached: in practice the cached-input price is
+  the one that decides what a long session costs.
+</ResponseField>
+
+## Working out a call
+
+A call's charge is the sum of its three lines, each the token count times its
+price, rounded up to the next microdollar (1,000,000 µ$ is one dollar).
+
+For example, one turn on `theo-spark-1.3` that reads 200,000 tokens, of which
+194,000 come from the cache, and writes 1,500:
+
+| Line | Tokens | Price per 1M | Charge |
+| --- | --- | --- | --- |
+| Input | 6,000 | $4.00 | $0.024 |
+| Cached input | 194,000 | $0.12 | $0.0233 |
+| Output | 1,500 | $12.00 | $0.018 |
+| **Total** | | | **$0.0653** |
+
+Every charge is listed with its token counts on **Transactions**; see
+[Extra usage](/account/extra-usage#where-the-spend-is-shown).
+
+## Your own key
+
+A run on your own credential (an endpoint of yours, see [Models](/concepts/model))
+is paid to your provider, at your provider's prices. It is not charged here and
+does not touch the wallet.
+
+<Note>
+Prices can change. A change applies to calls made after it; a charge already
+written never changes.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Extra usage" icon="wallet" href="/account/extra-usage">
+    The wallet these prices are charged to.
+  </Card>
+  <Card title="Plans" icon="credit-card" href="/account/plans">
+    The windows a plan buys, before the wallet is used.
+  </Card>
+</CardGroup>
