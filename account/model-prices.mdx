@@ -6,7 +6,7 @@ description: "What the wallet pays: each model per million tokens (input, output
 These are the list prices: per model for its tokens, and per tool call for the
 work your agent does on its machine and in connected apps. They are what [extra usage](/account/extra-usage)
 charges the wallet once a plan window is full, and what a call costs when the
-wallet pays for it. Inside your plan's windows you are not charged per token or per call;
+wallet pays for it. Inside your plan's windows you are not charged per token, and tool calls are free;
 the windows are what the plan buys (see [Usage](/account/usage)).
 
 Token prices are in US dollars per **one million tokens**.
@@ -19,17 +19,25 @@ Token prices are in US dollars per **one million tokens**.
 
 ## Tool calls
 
-Every tool call that succeeds is charged **$0.005**: a command run on the
-machine, a file read or written, a page opened in its browser, a call into a
-connected app. A call that fails is not charged.
+A tool call is the agent using its machine: a command run in the terminal, a file
+read or written, a page opened in its browser, a call into a connected app. The
+per-call price is what the machine's work costs, the way tokens are what the
+model's work costs.
 
-| Charged per call | Price |
-| --- | --- |
-| A tool call that succeeds | $0.005 |
-| A tool call that fails | free |
+**On a subscription, tool calls are free.** Inside your plan they are never
+charged, however many the agent makes.
 
-So a turn that runs ten commands on the machine adds $0.05 to the cost of its
-tokens.
+Without a subscription, or when the wallet pays because a plan window is full,
+each tool call that succeeds is charged **$0.005**. A call that fails is never
+charged.
+
+| Tool call | On a subscription | Paid from the wallet |
+| --- | --- | --- |
+| Succeeds | free | $0.005 |
+| Fails | free | free |
+
+So a turn paid from the wallet that runs ten commands on the machine adds $0.05
+to the cost of its tokens.
 
 ## What each column counts
 
