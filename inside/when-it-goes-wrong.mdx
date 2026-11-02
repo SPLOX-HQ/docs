@@ -23,15 +23,11 @@ behalf, doing exactly what it now says.
 used yesterday, or it refuses a kind of command it used to run. Either the tool
 came off its list or a rule was added about what it may do.
 
-**Every turn fails at the very start**, with a message naming a file:
+**Every turn fails at the very start**, with a message naming a file, such as:
 
-```
-programs/splox could not say who "Assistant" is: KeyError: 'TELEGRAM_BOT_TOKEN'
-```
+> programs/splox could not say who "Assistant" is: KeyError: 'TELEGRAM_BOT_TOKEN'
 
-```
-programs/splox could not say who answers this message: SyntaxError: …
-```
+> programs/splox could not say who answers this message: SyntaxError: …
 
 That is the platform asking `main.py` who should answer and not getting an
 answer. Nothing else in the harness ran; the file that is quoted is the one to
@@ -121,7 +117,7 @@ Two failures look like a bad edit and are not:
   [When a limit is reached](/account/limits).
 - **A tool that lost its credential.** A connected server whose token expired
   fails inside the run rather than at the start, and says so in the tool's own
-  words. Reconnect it under [Connections](/app/connections).
+  words. Reconnect it on the [Tools](/app/tools) screen.
 
 <CardGroup cols={2}>
   <Card title="Versions" icon="clock-rotate-left" href="/inside/versions">

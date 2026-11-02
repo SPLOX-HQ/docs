@@ -28,14 +28,14 @@ things it is about to make:
 
 One click creates both: a git repository of your own, seeded with the starter's
 tree, and a machine that checks it out and runs it. The names default to the
-starter's name and `Sandbox`; change them if you are going to have more than one.
+starter's name and **Sandbox**; change them if you are going to have more than one.
 
 ## What you get
 
 A copy is a real repository, not a template you fill in. It carries the
-[programs](/concepts/program) the starter declared — `programs/splox/main.py`
-with the agents in it, the `hooks/` that shape its runs, the harness's own
-`tools/`, its prompts and its evals.
+[programs](/concepts/program) the starter declared — the one that holds its
+agents, the hooks that shape its runs, the harness's own tools, its prompts and
+its evals.
 
 From then on it is yours and it drifts from the original. Publishing a new
 version of the starter does not reach into harnesses copied from it, and nothing
@@ -43,12 +43,12 @@ you change is pushed back.
 
 ## What happens next
 
-The machine checks the harness out at `~/harness`, installs whatever the tree
-declares, and starts answering. Nothing else is required of you: open a chat on
+The machine puts a copy of the harness in its `harness` folder, installs whatever
+it needs, and starts answering. Nothing else is required of you: open a chat on
 the new machine and it works.
 
 To change who that agent is, edit the checkout. The agent can do it for you —
-that is what the `~/harness` checkout is for — or you can clone the repository
+that is what the copy on the machine is for — or you can clone the repository
 and push. Either way the next message reads the new file.
 
 <CardGroup cols={2}>

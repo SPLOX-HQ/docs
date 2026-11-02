@@ -26,7 +26,8 @@ to run on.
 Three things on this screen matter now:
 
 - **My Agent** at the top left is the machine this chat runs on. Open it and it
-  reads `My Agent @ main` — the harness it runs, at the ref it runs.
+  reads **My Agent @ main** — the harness it runs, and *main*, meaning its latest
+  published version.
 - **Harness decides** on the composer means the model is the one your harness
   declared. You can override it per chat; see [Models](/concepts/model).
 - **Machines**, **Tools**, **Skills** and **Connections** in the sidebar are what
@@ -83,7 +84,7 @@ and a sandbox that resets.
 
 <Note>
 Use absolute paths when you name a file to the agent. The starter's file tools do
-not expand `~`, so `~/notes` comes back as `FileNotFoundError` while
+not expand `~`, so `~/notes` comes back as not found while
 `/home/daytona/notes` works. The agent's home is `/home/daytona`.
 </Note>
 
@@ -97,8 +98,8 @@ Open **Machines** in the sidebar and pick **Your machines**.
   <img src="/images/start/machines.png" alt="The Machines page showing one running machine" />
 </Frame>
 
-The card says what the machine runs (`Runs My Agent @ main`), what it has
-(`2 vCPU · 4 GB RAM`), how much disk it has used and when it was last active.
+The card says what the machine runs (**Runs My Agent @ main**), what it has
+(**2 vCPU · 4 GB RAM**), how much disk it has used and when it was last active.
 **Stop** shuts it down; the files stay. See [Machines](/concepts/machine).
 
 </Step>

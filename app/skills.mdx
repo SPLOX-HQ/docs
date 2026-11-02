@@ -50,27 +50,16 @@ Two other ways to fill that tab:
 
 ## Attaching one to an agent
 
-Skills are attached in code, in the agent's declaration:
-
-```python
-assistant = agent(
-    "Assistant",
-    system_prompt=prompt("assistant"),
-    tools=["system:compute"],
-    skills=["system:memory", "system:agent-browser", "trading-desk"],
-)
-```
-
-`system:<name>` is one of the platform's; a bare name is one of yours. Every
-skill is listed by name and there is no wildcard, so an agent has the skills its
-line names and no others.
+An agent has the skills its harness names for it, by name, and no others — there
+is no "all skills" setting. Ask for one in the chat: *"give yourself the
+trading-desk skill"*, and the agent adds it to its own list and publishes. A
+skill can be one of the platform's or one of yours, from **Your skills**.
 
 <Note>
-The library's files are in the sandbox either way, at `~/skills`. The `skills=`
-list is what the agent is **told** it has — the name and the description sit in
-its context, and the body is read when the skill fires. That is the whole trick:
-a harness can carry a hundred pages of procedure and pay for a line of it per
-turn.
+The whole library is on the machine either way. Naming a skill is what the agent
+is **told** it has — the skill's name and description stay in front of it, and
+the body is read only when the skill fires. That is the whole trick: a harness
+can carry a hundred pages of procedure and pay for a line of it per turn.
 </Note>
 
 <CardGroup cols={2}>

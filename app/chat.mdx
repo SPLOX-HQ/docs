@@ -26,9 +26,10 @@ above your message:
   <img src="/images/app/chat-running.png" alt="A Splox chat mid-run with a CSV attached to the message" />
 </Frame>
 
-What the agent receives is a URL. It downloads the file onto the machine itself —
-in the run above, the first thing it did was `mkdir -p /home/daytona/notes && curl
-…` — which means the file is on the disk afterward, and the next chat can read it.
+What the agent receives is a link to the file. It downloads the file onto the
+machine itself — in the run above, the first thing it did was make a `notes`
+folder and download the CSV into it — which means the file is on the disk
+afterward, and the next chat can read it.
 
 ### Model and effort
 
@@ -38,8 +39,8 @@ The chip in the composer reads **Harness decides · Default** until you change i
   <img src="/images/app/model-picker.png" alt="The model picker open, with Harness decides at the top" />
 </Frame>
 
-- **Harness decides** means the model is the one your harness declares in
-  `agent(..., model=…)`. Pick a specific model and it overrides the harness for
+- **Harness decides** means the model is the one your harness chose for the
+  agent. Pick a specific model and it overrides the harness for
   this chat. The choice is per chat — another conversation keeps whatever it was
   set to — but a new chat starts on the last model you picked, so put it back to
   *Harness decides* when you are done experimenting.
@@ -58,7 +59,7 @@ list. Which model to reach for is [Models](/concepts/model).
 
 ## Reading a run
 
-While the run is going you see a collapsed chip and a `Thinking…` line. Click the
+While the run is going you see a collapsed chip and a **Thinking…** line. Click the
 chip and the whole turn opens: the model's reasoning first, then every tool call
 in the order it was made.
 
@@ -66,8 +67,8 @@ in the order it was made.
   <img src="/images/app/chat-turn.png" alt="A Splox turn expanded showing reasoning and tool calls" />
 </Frame>
 
-Each tool call is its own chip — `Ran bash …` with the target it ran on, or
-`Downloaded file` with the link it produced. Open one and you get exactly what
+Each tool call is its own chip — **Ran bash …** with where it ran, or
+**Downloaded file** with the link it produced. Open one and you get exactly what
 was sent and what came back:
 
 <Frame caption="A tool call opened: the command the model wrote, and its output with the exit code">
@@ -113,7 +114,7 @@ untouched, so it is the way to try a second approach without losing the first.
 The fork runs on the same machine, which means both branches see the same
 files — a fork is a new conversation, not a new computer.
 
-**Sharing.** Share makes the chat public at a link of the form `/chat/<token>`;
+**Sharing.** Share makes the chat public at a link of the form `splox.io/chat/<code>`;
 anyone with it can read the conversation history, signed in or not.
 
 <Frame caption="The share dialog before the chat is public">
@@ -135,13 +136,9 @@ The panel on the right of a chat is live while the run is going.
 </Frame>
 
 - **Machine** — the machine this chat runs on, and how much of the context window
-  the conversation is using (`9.8K`, `5% used` above).
+  the conversation is using (**9.8K**, **5% used** above).
 - **Sandbox** — **Open in VS Code** gives you an editor session on the machine,
-  and **SSH** reveals a command you can paste into a terminal:
-
-  ```bash
-  ssh -p 2222 c9f1a2b7e40d3856@sandbox.splox.io
-  ```
+  and **SSH** reveals a one-line command you copy and paste into a terminal.
 
   The credential is temporary — the panel counts down the hour it has left — and
   **Revoke access** ends both the SSH session and the editor at once.

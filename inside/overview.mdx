@@ -127,34 +127,11 @@ button, and nothing to wait for. It also means the reverse: an edit made on this
 machine is only on this machine until it is published. A new chat and any second
 machine you own read the last published [version](/inside/versions).
 
-<Accordion title="What the agent wrote: the declaration in main.py">
-This is the block `main.py` answers with when the platform asks who *Assistant*
-is. It is here as evidence, not as something to copy — the agent writes it.
-
-```python
-assistant = agent(
-    "Assistant",
-    system_prompt=prompt("assistant"),
-    model="kimi-k3",
-    provider="splox",
-    tools=["system:compute", "tools/files.py", "tools/expenses.py", "tools/notes.py"],
-    skills=["system:agent-browser", "system:memory", "system:skill-authoring", "system:splox"],
-    agents=[executor],
-    max_iterations=1000,
-    context_memory={"context_tokens": 200000, "trim_target_percent": 30},
-    reasoning="max",
-    max_output_tokens=48000,
-)
-
-
-def handle(msg):
-    return assistant
-```
-
-`prompt("assistant")` passes a *reader* rather than the text, which is what makes
-an edit to the prompt file land on the next turn instead of the next restart. The
-full reference for every field is in [Agents](/reference/agents).
-</Accordion>
+The part of `main.py` that says who *Assistant* is names, in a few lines, the
+prompt file, the model, the tools and skills it may use, the sub-agents it can
+hand work to, and how long it may keep working. The agent writes it; you do not
+have to. [Agents](/reference/agents) describes every setting, for the day you
+want to read it.
 
 ## Looking without writing
 

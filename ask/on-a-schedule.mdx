@@ -124,12 +124,7 @@ one day.
 
 ## What "started" means, and how it ends
 
-The agent starts the program the ordinary way, in its sandbox:
-
-```bash
-setsid nohup python3 ~/harness/programs/nightly/main.py > /tmp/nightly.log 2>&1 &
-```
-
+The agent starts the program the ordinary way, in the background on its machine.
 It then keeps running after that turn, after that chat, and into tomorrow. It
 stops when the machine stops — somebody presses **Stop**, or a free plan's
 machine goes idle for 30 minutes — and it does not come back on its own when the
@@ -157,11 +152,10 @@ than on its own. [Plans](/account/plans) has the per-plan detail.
 
 ## Checking it
 
-**The state file says when it last ran.** On the machine:
-
-```json
-{"last": "2026-09-02", "wrote": "/home/daytona/briefings/2026-09-02.md"}
-```
+**The state file says when it last ran.** On the machine above it held the last
+date the job ran, 2026-09-02, and the file it wrote that day,
+`/home/daytona/briefings/2026-09-02.md`. Ask *"when did the morning job last
+run?"* and the agent reads it for you.
 
 **The log says what it did**, one line per firing:
 

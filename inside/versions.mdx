@@ -75,22 +75,6 @@ starts empty, so version 1 is the day it was copied from a
 [starter](/app/starters), and that line is the only record of where it came
 from. Everything after it is somebody asking for something.
 
-Read the same list yourself with one request:
-
-```bash
-curl -s -H "Cookie: session=$SESSION" \
-  https://splox.io/api/v1/harnesses/$HARNESS_ID/versions
-```
-
-```json
-{"versions": [
-  {"number": 7,
-   "commit": "a29e4d46e69c54f7b3eef10e2c55261420d43f5c",
-   "message": "Revert \"Add expenses tool (ledger add/report) to Assistant\"\n\nThis reverts commit 88d560d22aa2b2ff5fc13ab0f50f679851a607ed.\n",
-   "created_at": "2026-09-02T14:22:11Z"}
-]}
-```
-
 ## Which version this machine is running
 
 Three answers, and they are not the same answer.
@@ -102,21 +86,11 @@ Three answers, and they are not the same answer.
 does not sit on a number, it follows the harness, and picks up each publish on
 its next chat. See [Machines](/app/machines).
 
-**The run record, if you need to be exact.** Every run writes down the precise
-tree it executed, so a conversation from last week is readable at the version it
-actually ran:
-
-```json
-{
-  "id": "run_01M1H6MED6EX8RG3150FF0ZNS6",
-  "harness_id": "h_5V125BR7R4AA189NRYAB3DQC6D",
-  "harness_commit": "2677a1abaf1804a7dc9dfd9f06b134bbb7698609",
-  "status": "succeeded"
-}
-```
-
-That is the honest answer to *"which version gave me that reply"*, and it is why
-the number in a conversation from Tuesday still means something on Friday.
+**The run itself, if you need to be exact.** Every run records the precise
+version it ran, so a conversation from last week is tied to the version it
+actually ran. That is the honest answer to *"which version gave me that reply"*,
+and it is why the version behind a conversation from Tuesday still means
+something on Friday.
 
 <Note>
 There is a gap those answers can disagree across, and the screenshot above is
@@ -135,10 +109,9 @@ published and it closes.
 are written by your agent when it publishes, which is why they read like a
 changelog rather than like `update main.py`.
 
-**Who** is your agent, publishing on your behalf. Under the covers the author is
-whatever name it committed under — `splox <harness@splox.io>` for most of the
-list above, `assistant <assistant@splox.local>` for one of them — and none of
-those are separate people. If more than one person can talk to this agent, the
+**Who** is your agent, publishing on your behalf. The history may show it under
+a couple of different names — for most of the list above it is *splox*, for
+one of them *assistant* — and none of those are separate people. If more than one person can talk to this agent, the
 version message is where you say so; ask for it: *"when you publish, say who
 asked for the change."*
 
@@ -171,28 +144,24 @@ Say it in the chat, naming the change rather than a number if that is easier:
 What happens: your agent publishes **a new version whose contents are the old
 one**. Going back is a step forward in the list. That is version 7 in the table
 above — somebody asked *"take the expenses tool back out of my agent and publish
-that"*, and what the history recorded was:
-
-```
-Revert "Add expenses tool (ledger add/report) to Assistant"
-
-This reverts commit 88d560d22aa2b2ff5fc13ab0f50f679851a607ed.
-```
+that"*, and what the history recorded was *Revert "Add expenses tool (ledger
+add/report) to Assistant"*.
 
 Version 2 is still version 2. Version 7 is a new version that carries everything
-published since, minus the one thing that was undone:
+published since, minus the one thing that was undone. Asked what that version
+changed, the agent listed three things:
 
-```
-programs/splox/main.py     1 line changed   the tool taken off the agent's list
-tools/expenses.py         43 lines gone     the tool itself
-programs/mailer/          192 lines added   work that was sitting in the checkout
-```
+| What changed | In plain words |
+| --- | --- |
+| one line in the agent's own file | the expenses tool taken off the agent's list |
+| the expenses tool, 43 lines | the tool itself, gone |
+| the mailer, 192 lines | work that was sitting on the machine, published with it |
 
 The list only grows, nothing is deleted, and the version you rolled back from is
 still there if half of it turns out to have been right.
 
 <Warning>
-Look at that third line. A publish carries **everything the machine has**, not
+Look at that third row. A publish carries **everything the machine has**, not
 only the change you asked about — the mailer was work in progress on the same
 machine, and it went out with the rollback. If somebody else has been asking your
 agent for things, or you left something half-finished, ask what is about to be
@@ -229,75 +198,26 @@ rest of that turn behaves.
 If the change is right in general and wrong here — you want to reproduce
 something, or hold one machine still while the other moves on — a machine can be
 pointed at an older version instead. Nothing is published and no other machine
-moves:
-
-```bash
-curl -s -X PATCH -H "Cookie: session=$SESSION" -H 'Content-Type: application/json' \
-  -d '{"harness_ref":"versions/4"}' \
-  https://splox.io/api/v1/machines/$MACHINE_ID
-```
-
-An empty `harness_ref` puts it back on `main`. Ask for it in words —
-*"pin this machine to version 4 and leave the rest alone"* — and your agent makes
-that call.
+moves. Ask for it in words — *"pin this machine to version 4 and leave the
+rest alone"* — and your agent does it. *"Put this machine back on the latest
+version"* undoes it.
 
 <Warning>
-The ref is not checked against the repository when it is set. `versions/99` on a
-harness with seven versions is accepted, and the failure only shows up when the
-machine tries to check that tree out.
+The version is not checked when the machine is pinned to it. Version 99 on an
+agent with seven versions is accepted, and the failure only shows up when the
+machine next tries to run it. Name a version that exists.
 </Warning>
 
-## The exact shape of it
+## Underneath
 
-For an agent reading this page, and for anyone who wants the mechanism rather
-than the gesture.
-
-A harness is a git repository, and the version history is git's:
-
-```
-refs/heads/main        the current version — what a new chat opens on
-refs/versions/N        one publish, N decimal from 1, never moved, never deleted
-refs/drafts/<uuid>     unpublished work, staged by the git proxy on the way to a publish
-```
-
-```
-371758ecf28e8240192e4731080a7436fb492a09 refs/versions/1
-88d560d22aa2b2ff5fc13ab0f50f679851a607ed refs/versions/2
-e3f6d06e37a8457fd113b79130e07cf47e8f0dc4 refs/versions/3
-ca4a049df43e1b40f3d0526d9660ef94c487f692 refs/versions/4
-326d287e6d33880dfb07858502f6f787127aa95b refs/versions/5
-2677a1abaf1804a7dc9dfd9f06b134bbb7698609 refs/versions/6
-a29e4d46e69c54f7b3eef10e2c55261420d43f5c refs/versions/7
-```
-
-A version number is a label for people; the thing that names a tree is the
-**commit**, and the commit is what a run records. Publishing is `git push origin
-main` from the checkout — the push *is* the publish, it goes through the
-platform's gate, and a tree that is not a valid harness is refused with every
-problem named at once. [Publishing a version](/inside/versions) is the full
-reference; [Troubleshooting](/troubleshooting) quotes the refusals.
-
-<Accordion title="What the agent runs when you ask it to go back">
-Both of these end in a push, which is what makes the new version. Neither is
-something you have to type.
-
-```bash
-cd ~/harness
-
-# Undo one change, keeping everything since:
-git revert 326d287
-git push origin main
-
-# Or restore a whole tree, when several changes have to go at once:
-git read-tree -u --reset refs/versions/4
-git commit -m "Restore version 4: the token change broke the morning job"
-git push origin main
-```
-
-`read-tree -u --reset` sets the working tree to that exact tree and leaves `HEAD`
-where it is, so the commit that follows is a new version whose contents are
-byte-for-byte version 4's. That is the mechanism behind "the list only grows".
-</Accordion>
+Your agent's files are a git repository on the machine, and the version history
+is git's: each version is one published commit, numbered from 1, never moved and
+never deleted. The number is a label for people; the commit is what a run
+records. Publishing is the agent pushing its files — the push *is* the publish,
+it is checked on the way in, and a set of files that is not a valid agent is
+refused with every problem named at once. If you edit the files yourself, see
+[VS Code and SSH](/inside/vscode-and-ssh); [Troubleshooting](/troubleshooting#a-push-the-agents-repository-refuses)
+quotes the refusals.
 
 <CardGroup cols={2}>
   <Card title="When a change makes it worse" icon="triangle-exclamation" href="/inside/when-it-goes-wrong">

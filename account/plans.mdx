@@ -8,33 +8,6 @@ how many machines you keep and whether they stay running, and a short list of
 features that cost real money per call. It does not govern which models you may
 use — every model the platform offers is on every plan, free included.
 
-The plans come from the server, and the list is public:
-
-```bash
-curl -s "$SPLOX_BASE_URL/v1/subscriptions/plans"
-```
-
-```json
-{
-  "plans": [
-    {"slug": "free",    "name": "Free",    "monthly_price_microdollars": 0,
-     "machine_limit": 1, "machines_persistent": false},
-    {"slug": "pro",     "name": "Pro",     "monthly_price_microdollars": 25000000,
-     "machine_limit": 1, "machines_persistent": true},
-    {"slug": "max",     "name": "Max",     "monthly_price_microdollars": 99000000,
-     "machine_limit": 3, "machines_persistent": true},
-    {"slug": "max_20x", "name": "Max 20x", "monthly_price_microdollars": 300000000,
-     "machine_limit": 5, "machines_persistent": true}
-  ]
-}
-```
-
-Trimmed: each plan also carries its `id`, its `sort_order` and the Stripe price
-ids checkout uses.
-
-Money is in **microdollars** everywhere in this API: 1,000,000 µ$ is one dollar.
-`25000000` is $25.
-
 ## The four
 
 | Plan | Monthly | Machines | Kept running |
@@ -44,7 +17,7 @@ Money is in **microdollars** everywhere in this API: 1,000,000 µ$ is one dollar
 | Max | $99 | 3 | Yes |
 | Max 20x | $300 | 5 | Yes |
 
-Plans are monthly; there are no yearly plans. `Max` and `Max 20x` are one card in the app with a `5×` / `20×` toggle on it.
+Plans are monthly; there are no yearly plans. **Max** and **Max 20x** are one card in the app with a **5×** / **20×** toggle on it.
 
 <Frame caption="The plan grid: price, what the tier adds, and the machines it runs">
   <img src="/images/account/plans.png" alt="The Splox pricing page showing Free, Pro and Max" />
@@ -58,15 +31,14 @@ Every plan holds two rolling windows, five hours and a week, and the plan sets
 the cap on each. A bigger plan is a bigger cap, not a different product: the
 same models, the same tools, more of them per window.
 
-The caps themselves are not published — the plans endpoint deliberately omits
-them, and the app's pricing cards compare tiers in multiples rather than in
-units. What you read instead is how full yours is, as a percentage, on
-[Usage](/account/usage).
+The caps themselves are not published — the pricing cards compare tiers in
+multiples rather than in units. What you see instead is how full yours is, as a
+percentage, on [Usage](/account/usage).
 
 ### Machines
 
-`machine_limit` is how many machines the account keeps, counted over the ones
-you have not deleted. `machines_persistent` is whether they stay up.
+The machine count is how many machines the account keeps, counted over the ones
+you have not deleted. **Kept running** is whether they stay up.
 
 A machine on a paid plan has no idle timeout: it runs until somebody stops it.
 A free machine stops after 30 minutes with nothing touching it, which is the
@@ -74,43 +46,27 @@ line that decides whether a long-running program — a Telegram bot, a watcher, 
 nightly job — is something you can actually run. Either way the disk survives:
 stopping is not deleting. See [Machine](/concepts/machine).
 
-Asking for a machine past the limit is refused before anything is created:
+Asking for a machine past the limit is refused before anything is created, with
+a message along the lines of *"your plan runs one machine at a time: delete one,
+or move up a tier"*.
 
-```bash
-curl -s -X POST "$SPLOX_BASE_URL/v1/machines" \
-  -H "Authorization: Bearer $SPLOX_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name": "second-machine"}'
-```
-
-```json
-{
-  "error": "machine_limit_reached",
-  "detail": "your plan runs one machine at a time: delete one, or move up a tier",
-  "machine_limit": 1,
-  "plan_slug": "pro"
-}
-```
-
-That is a `402`, not a `429`, and the code is deliberately not `out_of_funds`:
-nothing resets on its own here and a full wallet buys no extra machines. Only a
-different plan does.
+Nothing resets on its own here, and money in the wallet buys no extra machines.
+Only deleting a machine or moving to a bigger plan does.
 
 ### Features that cost per call
 
-3D model generation runs on Max and Max 20x: `media_generate_3d`, `media_rig_3d`
-and the `media_job` poll that goes with them. A mesh is minutes of GPU time, so
-it is part of what a Max subscription buys rather than something every run can
-reach for. On any other plan the tool answers `3D generation is available on the
-Max plan`.
+3D model generation — making a 3D model and rigging it — runs on Max and
+Max 20x. A mesh is minutes of GPU time, so it is part of what a Max subscription
+buys rather than something every run can reach for. On any other plan the agent
+is told *"3D generation is available on the Max plan"*.
 
 Two more things need a paid plan, and both are refusals a free account meets
 rather than features it sees:
 
 - **Top-ups.** The wallet that funds [extra usage](/account/extra-usage) can
-  only be filled on Pro or Max. A free account gets
-  `topup_requires_subscription`.
-- **API tokens.** Minting a key for the API needs a paid plan. See
+  only be filled on Pro or Max. On Free, **Top up** tells you top-ups are
+  available on Pro and Max plans.
+- **API keys.** Creating a key for the API needs a paid plan. See
   [API keys](/account/api-keys).
 
 ## What a plan does not govern
@@ -123,16 +79,14 @@ call consumes, and an expensive model consumes more of it. See
 **Tools and MCP servers.** All of them, on every plan.
 
 **Your own provider keys.** A call made on a connection you added yourself is
-paid to your provider, not to us: it is not priced, it is not written to the
-ledger, and it does not fill a window.
+paid to your provider, not to us: it is not charged here, and it does not fill
+a window.
 
 ## Changing plans
 
 The pricing page and the **Manage** button on **Usage & billing** both end at
-Stripe. Which one you get depends on whether you already pay for something —
-first subscription goes to Checkout, a change of plan or interval goes to the
-Customer Portal. [Billing](/account/billing) has the endpoints and what each
-answer means.
+Stripe. Your first subscription goes to Stripe Checkout; a change of plan goes
+to the Stripe customer portal. [Billing](/account/billing) walks through both.
 
 <CardGroup cols={2}>
   <Card title="Usage" icon="gauge" href="/account/usage">

@@ -9,7 +9,7 @@ policy, and it is the one that reaches a person.
 
 Before you write, [Troubleshooting](/troubleshooting) covers the failures with a
 known answer — a full usage window, a machine that will not start, a push the
-harness refuses, a chat that says it is running and is not. If your message
+agent's repository refuses, a chat that says it is running and is not. If your message
 matches one of those, the page saves you the wait.
 
 ## What to put in it
@@ -18,19 +18,14 @@ A report that carries these is one somebody can act on without a round trip:
 
 <Steps>
 <Step title="The exact message">
-Copy it, do not paraphrase it. `machine_sandbox_lost` and "something went wrong"
-are different problems with different fixes, and the code is what tells them
-apart.
+Copy it, do not paraphrase it. "The files this machine kept are not on the
+runner any more" and "something went wrong" are different problems with
+different fixes, and the wording is what tells them apart.
 </Step>
 
 <Step title="Where it happened">
-The chat URL, or the run id, or the machine id — whichever you have. A chat URL
-is enough to find the rest.
-
-```bash
-curl -s "$SPLOX_BASE_URL/v1/machines"    -H "Authorization: Bearer $SPLOX_API_KEY"
-curl -s "$SPLOX_BASE_URL/v1/runs/active" -H "Authorization: Bearer $SPLOX_API_KEY"
-```
+The chat URL, or the machine's name — whichever you have. A chat URL is enough
+to find the rest.
 </Step>
 
 <Step title="When, in UTC">
@@ -38,35 +33,23 @@ A timestamp to the minute. Logs are searched by time, and "yesterday afternoon"
 is a wide net.
 </Step>
 
-<Step title="The trace id, for an API failure">
-Send `X-Request-Id` with the request and the same string comes back as
-`trace_id` in the problem body. It is the one value that makes your logs and ours
-name the same request.
-
-```bash
-curl -s "$SPLOX_BASE_URL/v2/runs/run_01JAZ6Y5M3Q8F7N2R4T6V9W0XC" \
-  -H "Authorization: Bearer $SPLOX_API_KEY" \
-  -H "X-Request-Id: bug-2026-09-02-a"
-```
-
-```json
-{"status": 404, "code": "not_found", "trace_id": "bug-2026-09-02-a"}
-```
-</Step>
-
 <Step title="Which version was running">
-For anything about the agent's behavior, the harness and the ref or commit the
-machine was on. `GET /api/v1/machines` carries `harness_id` and `harness_ref`;
-`GET /api/v1/harnesses/{id}/versions` lists what has been published.
+For anything about the agent's behavior, the agent and the version the machine
+was on. The machine's card on **Machines** says which agent it runs and at
+which version (*Runs My Agent @ main*), and the agent itself can tell you its
+exact version — see [Versions](/inside/versions).
 </Step>
 </Steps>
+
+If you hit the problem through the API rather than the app, add the request id
+you sent with it; [Errors](/api/errors) explains how.
 
 <Warning>
 Do not paste credentials. A transcript can contain the value of an environment
 secret, a token that appeared in a tool call, or the contents of a file the agent
 read. Read what you are pasting before you send it. Redacting a value does not
 make it stop working — if one has leaked, revoke it: [API
-keys](/account/api-keys) for a key you minted, [Connections](/tools/connections)
+keys](/account/api-keys) for a key you created, [Connections](/tools/connections)
 for a connected server.
 </Warning>
 
@@ -93,7 +76,7 @@ and the sentence.
 
 ## Billing and accounts
 
-Same address, `support@splox.io`. Two things that are self-service and do not
+Same address, **support@splox.io**. Two things that are self-service and do not
 need a ticket:
 
 - **The subscription itself** — plan changes, payment method, invoices, and
@@ -109,7 +92,7 @@ For volume, procurement or an agreement your organization needs, write to
 ## Data requests
 
 Access, rectification, erasure, portability, restriction and objection go to
-`support@splox.io`; the [privacy policy](https://splox.io/privacy) undertakes to
+**support@splox.io**; the [privacy policy](https://splox.io/privacy) undertakes to
 answer within 30 days. Deleting the account yourself does the erasure
 immediately — [Data and privacy](/data-and-privacy) says exactly what it removes.
 

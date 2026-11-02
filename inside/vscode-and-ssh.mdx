@@ -80,51 +80,34 @@ That random string is not a placeholder — it is the whole credential, carried 
 the username. Copy the line, paste it into your terminal, and you are on the
 machine as the user your agent runs as, in `/home/daytona`.
 
-It is good for the things a terminal is good for:
-
-```bash
-tail -50 /tmp/telegram.log        # what is that program of mine doing
-pgrep -af programs/nightly        # is it even running
-du -sh ~/*                        # what is filling the disk
-git -C ~/harness log --oneline -5 # what has my agent changed lately
-```
-
-And for getting a file off the machine without going through the chat:
-
-```bash
-scp -P 2222 vFfi…@sandbox.splox.io:/home/daytona/expenses.csv .
-```
+It is good for the things a terminal is good for: reading the log of a program
+the agent left running, checking whether that program is still going, seeing
+what is filling the disk, looking through the history of what your agent has
+changed. And for copying files off the machine without going through the chat —
+the same address works with `scp`, on the same port.
 
 Three things to know:
 
-- **The grant lasts an hour.** The panel counts it down — `0h 59m remaining`.
-- **Only the newest command works.** Pressing SSH again mints a new one and the
+- **The access lasts an hour.** The panel counts it down — *0h 59m remaining*.
+- **Only the newest command works.** Pressing SSH again makes a new one and the
   previous command stops connecting, in the same second. If a command you copied
   earlier is refused, that is why.
-- **You cannot publish from there.** The checkout at `~/harness` is readable and
-  editable over SSH, but `git push` fails to authenticate: the token that lets a
-  push through belongs to a run, not to your terminal.
-
-  ```
-  fatal: Authentication failed for 'https://splox.io/api/v1/harness-git/…'
-  ```
+- **You cannot publish from there.** The agent's files in `harness` are readable
+  and editable over SSH, but a `git push` from your terminal is refused with
+  *Authentication failed*: the permission to publish belongs to the agent's
+  runs, not to your terminal.
 
   This is the seam between looking and authoring. Edit the file here if you like;
   ask your agent to publish it.
 
 ## Closing both
 
-**Revoke access** ends the SSH grant and the editor session together. Afterwards
-the command is refused —
-
-```
-Connection to sandbox.splox.io closed by remote host.
-```
-
-— and the editor tab answers `502`, because the process behind it is gone. The
+**Revoke access** ends the SSH access and the editor session together. Afterwards
+the terminal says *Connection to sandbox.splox.io closed by remote host*, and the
+editor tab shows an error page, because the editor behind it is gone. The
 machine and everything on it are untouched; only the doors are shut.
 
-Nothing else closes them for you on your schedule. The SSH grant expires on its
+Nothing else closes them for you on your schedule. The SSH access expires on its
 own after an hour, and the editor's link is signed for an hour; the editor
 process itself shuts down once the tab has been idle for a while, and dies with
 the machine. If you opened a door on a machine somebody else can see the screen
@@ -139,34 +122,6 @@ of, revoke it when you are done rather than waiting for any of that.
 | A refusal naming your plan | Opening a door on a stopped machine starts it, and the plan says how many machines may run. [When a limit is reached](/account/limits). |
 | *…this sandbox predates the editor image and picks it up when it is next recreated* | This machine was built before the editor shipped. SSH still works. |
 | *…the editor did not start in time, please try again* | The editor was starting when the request timed out. Press it again. |
-
-## The requests behind the buttons
-
-For an agent reading this page, or anyone driving the app's own API with a
-session cookie:
-
-<ParamField path="GET /v1/chats/{chat_id}/sandbox" type="request">
-Does this chat have a machine, and what state is it in.
-`{"exists": true, "state": "started"}`. Reports only — it never starts anything.
-</ParamField>
-
-<ParamField path="POST /v1/chats/{chat_id}/sandbox/ssh" type="request">
-One SSH grant, one hour.
-`{"command": "ssh -p 2222 <token>@sandbox.splox.io", "expires_at": "…"}`.
-</ParamField>
-
-<ParamField path="POST /v1/chats/{chat_id}/sandbox/code" type="request">
-Starts the editor and returns a link to it: `{"url": "https://8443-….splox.app"}`.
-No expiry field — the link is signed on the runner's clock, and this API will not
-invent a second deadline for it.
-</ParamField>
-
-<ParamField path="DELETE /v1/chats/{chat_id}/sandbox/access?code_token=…" type="request">
-Closes both doors. `204`, and `204` again for a chat that has no machine.
-</ParamField>
-
-Both POSTs answer `202 {"state": "starting"}` while a stopped machine comes up;
-the client is expected to ask again. Neither one ever creates a machine.
 
 <CardGroup cols={2}>
   <Card title="Files" icon="folder-open" href="/inside/files">

@@ -33,46 +33,34 @@ Six packages, on for every agent on the account unless you turn one off:
 
 Each card says *Available in every run* and offers **Turn off**.
 
-## What `system:` means
+## How an agent gets a tool
 
-The slug on that screen is the second half of a name you write in code. An agent
-gets a tool by naming its **source** in its declaration:
+This screen decides what your account **has**. Which of those a given agent
+**gets** is decided in its harness: an agent is only ever offered the tools its
+own list names. There are three kinds of thing on that list:
 
-```python
-assistant = agent(
-    "Assistant",
-    system_prompt=prompt("assistant"),
-    tools=[
-        "system:compute",                          # a platform package
-        "system:search#search",                    # one tool out of a package
-        "tools/files.py",                          # a file of your own harness
-        "019e4f9a-a679-79b4-a21c-7ff9c60b9181",    # an MCP server you connected
-    ],
-)
-```
+- **A platform package** — one of the system tools above. Splox runs it,
+  credentials and all; you cannot edit one and you do not publish anything for it
+  to work. An agent can be given a whole package or only some of its tools.
+- **A tool of your own** — a file in the harness the agent wrote or you wrote.
+- **A server you connected** — one of **Your MCP servers**.
 
-`system:<slug>` is a package the platform runs, credentials and all. You cannot
-edit one and you do not publish anything for it to work. A `#` after the source
-narrows it to named tools and nothing else.
+You do not have to edit that list by hand. Ask: *"use my Linear server from now on"*, or
+*"stop using the SMS tools"*, and the agent changes its own list and publishes.
 
 <Note>
-`system:compute` — the runner every other tool executes through — is not on this
-screen, and neither is `system:splox`. They are sources you can name in code
-without being listed here as something to switch. The full list of sources your
-account can use comes back from
-[`/v2/tool-servers`](/api/tool-servers).
+Two platform packages are not on this screen because there is nothing to switch:
+the one that runs commands on the machine, which every other tool works through,
+and the one that manages Splox itself. An agent can still be given them.
 </Note>
 
-So there are two switches, and they do different things. This screen decides what
-your account **has**; the `tools` list in the harness decides what a given agent
-**gets**. An agent is only ever offered what its own line names.
 [Tools](/reference/tools) is the whole story, including writing your own.
 
 ## Connecting an MCP server
 
 Pick a server from the catalog and Splox shows what connecting it takes. The
-badges on the card said it already: `oauth` or `manual` for the credential,
-`http` or `sse` for the transport.
+badges on the card said it already: **oauth** or **manual** for the credential,
+**http** or **sse** for the transport.
 
 <Frame caption="An OAuth server: you authorize at the provider, and Splox never sees the password">
   <img src="/images/app/tool-connect.png" alt="The connect page for the Linear MCP server" />
@@ -80,9 +68,9 @@ badges on the card said it already: `oauth` or `manual` for the credential,
 
 - **OAuth** — name the connection and press Connect. You are sent to the
   provider to authorize, and back.
-- **Manual** — the page asks for exactly the headers that server wants, named
-  one by one (`X-api-key`, `X-access-token`, and so on), with a link to where you
-  get them.
+- **Manual** — the page asks for exactly the keys that server wants, named one
+  by one (an API key, an access token, and so on), with a link to where you get
+  them.
 
 A server that is not in the catalog is **Add MCP server**:
 
@@ -92,7 +80,7 @@ A server that is not in the catalog is **Add MCP server**:
 
 Give it a name and a URL, pick the transport, and add whatever headers it
 authenticates with. It then appears under **Your MCP servers** like any other,
-and an agent gets it by putting its id in `tools`.
+and an agent gets it [the same way as any other tool](#how-an-agent-gets-a-tool).
 
 <CardGroup cols={2}>
   <Card title="Tools in the harness" icon="code" href="/reference/tools">

@@ -35,17 +35,14 @@ is paired to your account without a code to copy anywhere.
 ## What it adds over the browser
 
 The browser gives an agent a machine that Splox runs. The desktop app is how an
-agent reaches **your** computer instead: the background agent it installs is the
-thing on the other end of a `local:<device_id>` target, which the compute tools
-accept everywhere they accept the sandbox:
-
-```python
-compute_exec(command="ls ~/Downloads", target="local:<device_id>")
-```
+agent reaches **your** computer instead: the background agent it installs is
+what lets the agent run a command, read a file or open a browser on the computer
+in front of you, with the same tools it uses on its machine — *"list what is in
+my Downloads folder"* would be answered from your own disk.
 
 That is what the download page means by *native browser control, local files,
-system shell* — the same tools, pointed at the machine in front of you rather
-than at the sandbox.
+system shell* — the same tools, pointed at the computer in front of you rather
+than at the machine Splox runs.
 
 On Windows the background agent starts with your session and keeps running when
 you close the window, so the computer stays reachable. On macOS and Linux

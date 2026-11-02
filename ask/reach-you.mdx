@@ -27,13 +27,8 @@ tell me the address to write to.
   programs already there — before writing anything.
 - **Wrote a program**: a poll loop, a `Butler` agent for composing the reply, a
   prompt file, a state file and a README.
-- **Started it** with the ordinary command anybody would use for a background
-  script, so it outlives the turn:
-
-  ```bash
-  setsid nohup python3 ~/harness/programs/mailbutler/main.py \
-      > /tmp/mailbutler.log 2>&1 &
-  ```
+- **Started it** in the background, the ordinary way anybody starts a script
+  that should outlive the terminal, so it keeps running after the turn.
 
 - **Changed its own design mid-run.** Its first version had the agent send the
   mail itself; it decided the loop should send it instead, in its own words, "that
@@ -265,7 +260,7 @@ the top of a conversation.
 Three checks, cheapest first.
 
 **Ask.** "Is the mail watcher running?" The agent looks and tells you. It is one
-`ps` on its own machine.
+quick check on its own machine.
 
 **Read the log.** The program the agent wrote logs both sides of every exchange
 to `/home/daytona/mailbutler.log`, and it says so in its own README:
@@ -275,8 +270,8 @@ to `/home/daytona/mailbutler.log`, and it says so in its own README:
 2026-09-02 13:50:01 UTC  poll failed; sleeping and retrying
 ```
 
-That second line is the log doing its job. The poll had failed with a `524` from
-the platform's own tool endpoint; the loop caught it, wrote the line, and slept
+That second line is the log doing its job. The check for new mail had failed on the
+platform's side for a moment; the loop caught it, wrote the line, and slept
 instead of dying. A watcher without a log is a watcher you cannot answer any
 question about, so "keep a log I can read" is worth putting in the original ask.
 

@@ -57,9 +57,9 @@ A connected endpoint turns up in two places:
 
 - In a chat, under the composer's **Advanced → Endpoint**, by the name you gave
   it. Picking it there runs that conversation on your credential.
-- In a harness, as `text_llm_endpoint_id` on an agent — the id of the endpoint
-  row, and the alternative to `provider`, never its companion. The ids come from
-  [`/v2/llm-endpoints`](/api/llm-endpoints).
+- In a harness, for an agent that should always answer from it. Ask your agent
+  for it — *"answer from my OpenAI connection from now on"* — and it changes its
+  own settings.
 
 Each card on the Connections screen shows the provider, the base URL if you set
 one, and whether it is active. The bin icon disconnects it, after a confirmation;
@@ -74,18 +74,17 @@ The second tab is for the machine rather than the model.
   <img src="/images/app/connections-secrets.png" alt="The Secrets tab with the environment secrets description" />
 </Frame>
 
-Encrypted key/value pairs, injected as environment variables into your agent
-sandboxes — for the agent and its sub-agents, across every chat. Values are never
+Encrypted names and values, handed to your agents' machines as environment
+variables — for the agent and its sub-agents, across every chat. Values are never
 shown again after you save them.
 
-This is where a token belongs when the *agent's own code* needs it: a GitHub PAT
-a script pushes with, an API key a tool of your harness reads from
-`os.environ`. Provider keys go in the Providers tab instead, because those are
+This is where a token belongs when the *agent's own code* needs it: a GitHub
+token a script pushes with, an API key a tool of your harness reads. Provider keys go in the Providers tab instead, because those are
 used by the platform, not by your code.
 
 <CardGroup cols={2}>
   <Card title="Models" icon="brain" href="/concepts/model">
-    Which model to reach for, and what an agent's `model` and `provider` mean.
+    Which model to reach for, and how an agent's model is chosen.
   </Card>
   <Card title="Tools" icon="wrench" href="/app/tools">
     Connecting an external service through an MCP server.

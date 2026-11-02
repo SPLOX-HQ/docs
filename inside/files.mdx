@@ -48,36 +48,24 @@ you spell a path out, spell it out.
 
 Two things that are not there and never will be: anything outside the home
 directory, and anything from before the machine existed. The root filesystem is
-read-only, so `/work`, `/data` and `/app` are not places:
-
-```
-touch: cannot touch '/data-test': Permission denied
-mkdir: cannot create directory ‘/work’: Permission denied
-```
+read-only, so `/work`, `/data` and `/app` are not places: the agent is told
+*Permission denied* the moment it tries to write there.
 
 If your agent reports that it could not write a file, that is the usual reason,
 and the fix is one sentence: *put it under /home/daytona.*
 
 ## Getting a file out
 
-**Ask for it.** "Give me a download link for that CSV" produces a URL that works
-from anywhere — no sign-in, no session:
-
-```json
-{"url": "https://41999-….splox.app/report.csv", "filename": "report.csv", "expires_in_seconds": 3600}
-```
-
-An hour, by default. It is a link to your machine, so treat it the way you would
+**Ask for it.** "Give me a download link for that CSV" produces a link that works
+from anywhere — no sign-in needed. It lasts an hour, by default. It is a link to your machine, so treat it the way you would
 treat the file.
 
 **Open the machine in VS Code** and use the editor's own download, when you want
 to look before you take it. See [VS Code and SSH](/inside/vscode-and-ssh).
 
 **Copy it over SSH**, when there are many files or you want them in a script:
-
-```bash
-scp -P 2222 <token>@sandbox.splox.io:/home/daytona/expenses.csv .
-```
+the SSH command from the chat works for copying files too (with `scp`). See
+[VS Code and SSH](/inside/vscode-and-ssh#ssh).
 
 ## Putting a file in
 
@@ -93,7 +81,7 @@ same message.
 | Survives a stop | Does not |
 | --- | --- |
 | Everything under `/home/daytona` | Anything that was running |
-| The `~/harness` checkout, including edits nobody published | A program's place in its loop |
+| The agent's own files, including edits nobody published | A program's place in its loop |
 | Packages the agent installed | Open connections, held credentials |
 | A program's state file, if it wrote one | Anything held only in memory |
 
@@ -105,7 +93,7 @@ The practical consequence is for the programs you ask your agent to run — a bo
 a nightly job, a watcher. They keep going through the next chat and into
 tomorrow, and they stop when the machine stops. Ask for a program that writes
 what it is doing to a file and reads it back on start, and restarting it costs
-nothing. [A program that stopped when the machine did](/troubleshooting) covers
+nothing. [A program that stopped when the machine did](/troubleshooting#a-program-that-stopped-when-the-machine-did) covers
 the rest.
 
 ## What a second chat can see
@@ -128,14 +116,12 @@ Two ways to end up looking at the wrong disk:
 
 ## How much room there is
 
-Thirty gigabytes, and the **Machines** screen tells you how much of it is gone:
-
-```
-17 MB of 30 GB used · measured 9 minutes ago
-```
+Thirty gigabytes, and the **Machines** screen tells you how much of it is gone —
+for example *17 MB of 30 GB used · measured 9 minutes ago*.
 
 Measured, not live — hence the timestamp. If you want the number right now, ask
-your agent; it is on the machine and `du -sh ~/*` costs it nothing.
+your agent: *"how much disk are you using, and what is taking the most?"* It is
+on the machine, and checking costs it nothing.
 
 <CardGroup cols={2}>
   <Card title="What is on the machine" icon="server" href="/inside/overview">

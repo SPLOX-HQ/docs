@@ -167,17 +167,17 @@ to be in the harness.
 The answer being different is the first check. The second is that every run keeps
 a record of which of your rules ran and what each decided:
 
-```text
-hook.called  {"hook": "context.build", "source": "programs/splox/hooks/context.py", "decision": "answered",     "duration_ms": 12}
-hook.called  {"hook": "model.choose",  "source": "programs/splox/hooks/model.py",   "decision": "use_default",  "duration_ms": 14}
-hook.called  {"hook": "stop.done",     "source": "programs/splox/hooks/stop.py",    "decision": "use_default",  "duration_ms": 17}
-hook.called  {"hook": "tools.before",  "source": "programs/splox/hooks/tools.py",   "decision": "use_default",  "duration_ms": 9}
-```
+| Rule | File | What it decided |
+| --- | --- | --- |
+| what goes into the prompt | `hooks/context.py` | answered |
+| which model runs | `hooks/model.py` | left it to the default |
+| when the turn stops | `hooks/stop.py` | left it to the default |
+| before a tool call | `hooks/tools.py` | left it to the default |
 
 That is from a real run on the account this page was written from, before any
-model rule existed. `use_default` means the file was reached and chose not to
-decide — which is exactly what a rule that is not firing looks like, and exactly
-what a rule with a typo in it looks like too.
+model rule existed. "Left it to the default" means the file was reached and
+chose not to decide — which is exactly what a rule that is not firing looks
+like, and exactly what a rule with a typo in it looks like too.
 
 <Warning>
 A rule that raises does not stop the run. The platform's own answer runs in its

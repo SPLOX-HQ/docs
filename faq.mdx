@@ -30,31 +30,30 @@ survives.
 
 They stay. `/home/daytona` is the agent's home and everything under it survives a
 stop, a restart and the end of a chat — files, checkouts, installed packages, a
-database a program wrote. The read-only root is the exception: `/work`, `/data`
-and `/app` do not exist.
+database a program wrote. Everything outside the home directory is read-only, so
+folders like `/work`, `/data` and `/app` do not exist.
 → [Memory and what persists](/reference/memory)
 
 ## Can I have more than one machine?
 
 Free and Pro run one at a time, Max three, Max 20x five. A machine runs one
-harness at one ref, so a second harness of yours needs a machine of its own. A
+harness at one version, so a second harness of yours needs a machine of its own. A
 plan that shrinks does not delete anything; the extra machines simply stop
 starting.
 → [Plans](/account/plans)
 
 ## Where does the agent's prompt live, and how do I change it?
 
-In the harness, as code: `agent("Assistant", system_prompt=…)` inside
-`programs/splox/main.py`. Ask your agent to edit that file, or edit it in the
-checkout at `~/harness` yourself. There is no prompt box in settings, on purpose
+In the harness — the agent's own files on its machine. Ask your agent to change
+it (*"be shorter"*, *"always answer in Spanish"*), or edit the files yourself. There is no prompt box in settings, on purpose
 — the prompt is versioned with everything else that decides behavior.
 → [Agent](/concepts/agent)
 
 ## When does an edit take effect? Do I have to publish?
 
-An edit to the checkout on the machine lands on the **next turn** — the platform
-asks `main.py` who an agent is at the moment it needs to know. Publishing
-(`git push origin main`) makes a numbered version, which is what a *new* chat and
+An edit to the agent's files on the machine lands on the **next turn** — the
+platform reads who the agent is at the moment it needs to know. Publishing (ask
+the agent to publish) makes a numbered version, which is what a *new* chat and
 any other machine on that harness pick up. So: try it in place, publish when it
 is right.
 → [Publishing a version](/inside/versions)
@@ -69,7 +68,7 @@ starter's later changes if you want them.
 
 ## Why does the agent write Python instead of calling tools normally?
 
-Because a tool here is a Python function it imports, so one block of code can
+Because a tool here is something it can call from a short script, so one script can
 call four tools, loop over the results and print only the answer — instead of
 four round trips through the model with every intermediate result pasted back
 into the context. It is cheaper, faster and easier to read afterwards.
@@ -77,24 +76,24 @@ into the context. It is cheaper, faster and easier to read afterwards.
 
 ## How do I connect Gmail, Linear or Notion?
 
-On the **Tools** screen, as MCP servers. Pick one from the catalog and authorize
-it; the credential stays on the platform and is attached to the call, never
-written into the machine.
+On the **Tools** screen. Pick one from the catalog and sign in to it; the
+credential stays on the platform and is added to each call, never written into
+the machine.
 → [Tools](/app/tools) · [Connections](/tools/connections)
 
 ## What is the Connections screen, then?
 
 Model providers and environment secrets. Add your own OpenAI, Anthropic or Gemini
-key and it becomes an endpoint the composer can pick; add a secret and it is
-injected into the machine's environment for your own code to read. Connecting a
+key and it becomes a model choice in the composer; add a secret and it is handed
+to the machine for your own programs to read. Connecting a
 *service* is the Tools screen, not this one.
 → [Connections](/app/connections)
 
 ## Which model does it use, and can I bring my own key?
 
-The composer's *Harness decides* means no selection at all — the harness picks,
-in code. Choose a model there and that chat uses it. A key you add on Connections
-becomes an endpoint you can select, and calls through it are billed by your
+The composer's **Harness decides** means no selection at all — the harness picks.
+Choose a model there and that chat uses it. A key you add on Connections becomes
+a choice you can select, and calls through it are billed by your
 provider rather than by us.
 → [Model](/concepts/model)
 
@@ -107,9 +106,8 @@ only when the machine does. Write it so that starting it twice is harmless.
 
 ## Can I drive an agent from my own code?
 
-Yes, over the HTTP API with a Bearer key. Note that a run needs a `machine_id`
-(the public `m_…` id) as well as a harness, and that no published SDK sends that
-field today — so use the API directly for starting runs until they do.
+Yes, over the API, with a key from [API keys](/account/api-keys). The API pages
+say which calls start a run and what they need.
 → [Runs](/api/runs) · [Python SDK](/sdk/python)
 
 ## Why did my turn stop with "You have used your 5-hour limit"?
@@ -122,22 +120,22 @@ windows belong to the account.
 
 ## Does topping up raise the limit?
 
-No. Money in the wallet does not change the cap; it pays for calls past a full
+No. Money in the wallet does not change the cap; it pays for work past a full
 window at list prices, which is what extra usage is. A bigger plan raises the
 cap, and what you have already spent is measured against the new one.
 → [Extra usage](/account/extra-usage)
 
 ## Who can see a chat I shared?
 
-Anyone with the link, with no account and no sign-in — the token *is* the access
+Anyone with the link, with no account and no sign-in — the link *is* the access
 control. They see the whole transcript, including tool calls, so read the turns
 before you send it. **Make private** kills the link at once, and sharing again
-mints a different one.
+makes a different one.
 → [Security](/security)
 
 ## Is my data used to train models?
 
-The text of a turn goes to whichever model provider the run resolved to, and the
+The text of a turn goes to whichever model provider the run uses, and the
 app asks for explicit consent before the first time that happens. The privacy
 policy names the providers and the safeguards; it makes no statement about
 training in either direction, so do not assume one — ask [support](/support) if
@@ -146,7 +144,7 @@ it decides whether you can put a piece of work here.
 
 ## What happens if I delete a machine? Do I lose my chats?
 
-The sandbox and its disk are destroyed; the harness is untouched and your chats
+The machine and its disk are destroyed; the harness is untouched and your chats
 are kept, though a chat whose machine is gone has nothing to run on. Deleting a
 *harness* takes the repository and every machine running it. Neither is
 reversible.
@@ -155,10 +153,10 @@ reversible.
 ## The agent says it wrote a file and I cannot find it.
 
 Four usual causes: it used `~`, which the starter's file tools do not expand
-(`/home/daytona/notes` works); a sub-agent wrote it in its own worktree at
-`/home/daytona/workspace-<name>`; it tried to write outside the home directory,
-where the filesystem is read-only; or it ran on a different computer — another
-machine, or a `local:`/`ssh:` target.
+(`/home/daytona/notes` works); a sub-agent wrote it in its own copy of the
+project at `/home/daytona/workspace-<name>`; it tried to write outside the home
+directory, where everything is read-only; or it ran on a different computer —
+another machine, your own computer, or a server it reached over SSH.
 → [Troubleshooting](/troubleshooting)
 
 ## Can two people share one agent?
@@ -171,8 +169,8 @@ conversation. Two people wanting their own agents want two accounts.
 ## Is there a desktop app, and can the agent work on my own computer?
 
 There is a desktop app for macOS, Windows and Linux; it is the same product in a
-window, plus a small daemon that lets a tool call address your own machine as
-`local:<device_id>`. Machines on your own hardware are not switched on yet.
+window, plus a small background helper that lets the agent work on your own
+computer when you allow it. Machines on your own hardware are not switched on yet.
 → [Desktop app](/app/desktop)
 
 <CardGroup cols={2}>

@@ -41,25 +41,16 @@ to the cost of its tokens.
 
 ## What each column counts
 
-<ResponseField name="Input" type="per 1M tokens">
-  Tokens sent to the model that were not served from its cache: your message,
-  the parts of the conversation the model has not seen before, tool results.
-</ResponseField>
-<ResponseField name="Output" type="per 1M tokens">
-  Tokens the model writes: its answer, its tool calls, and its reasoning when
-  the model reasons.
-</ResponseField>
-<ResponseField name="Cached input" type="per 1M tokens">
-  Input the model has already seen in this conversation and reads back from its
-  cache. An agent's turns resend the whole conversation, so after the first
-  turn nearly all of the input is cached: in practice the cached-input price is
-  the one that decides what a long session costs.
-</ResponseField>
+| Column | What it counts |
+| --- | --- |
+| **Input** | Tokens sent to the model that were not served from its cache: your message, the parts of the conversation the model has not seen before, tool results. |
+| **Output** | Tokens the model writes: its answer, its tool calls, and its reasoning when the model reasons. |
+| **Cached input** | Input the model has already seen in this conversation and reads back from its cache. An agent's turns resend the whole conversation, so after the first turn nearly all of the input is cached: in practice the cached-input price is the one that decides what a long session costs. |
 
 ## Working out a call
 
 A turn's charge is the sum of its lines: each token count times its price, plus
-its tool calls, rounded up to the next microdollar (1,000,000 µ$ is one dollar).
+its tool calls, rounded up to the next millionth of a dollar.
 
 For example, one turn on `theo-spark-1.3` that reads 200,000 tokens, of which
 194,000 come from the cache, writes 1,500, and runs three commands on the machine:
